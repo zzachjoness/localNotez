@@ -11,6 +11,7 @@ function addName(key, name) {
   userName.innerText = name;
   console.log("should be name: ", name);
   button.innerText = "-";
+
   button.onclick = function () {
     myStorage.removeItem(key);
 
