@@ -1,31 +1,53 @@
 const form = document.getElementById("uniqueID");
-let names = document.getElementById("nameList");
+let nameList = document.getElementById("nameList");
 let namesArr = [];
 let myStorage = window.localStorage;
-function addName(name) {
+
+function addName(key, name) {
   let div = document.createElement("div");
+  let userName = document.createElement("div");
   let button = document.createElement("button");
+  div.setAttribute("id", key);
+  userName.innerText = name;
+  console.log("should be name: ", name);
   button.innerText = "-";
   button.onclick = function () {
-    alert("here be dragons");
+    myStorage.removeItem(key);
+
+    /*
+    
+    this statment is not needed as dom will be manipulated with remove
+    instead of repainting the entire namesArr array
+
+    namesArr = namesArr.filter((obj) => obj.key !== key);
+    
+    */
+    var el = document.getElementById(key);
+    el.remove();
   };
-  div.innerText = name;
+
+  div.appendChild(userName);
   div.appendChild(button);
-  names.appendChild(div);
+  nameList.appendChild(div);
 }
+
 for (let i = 0; i < myStorage.length; i++) {
-  const getName = myStorage.getItem(myStorage.key(i));
-  namesArr.push(getName);
+  const key = myStorage.key(i);
+  const name = myStorage.getItem(key);
+  namesArr.push({ key: key, name: name });
 }
-namesArr.forEach((name) => {
-  addName(name);
+
+namesArr.forEach(({ key: key, name: name }) => {
+  addName(key, name);
 });
+
 form.addEventListener("submit", (e) => {
   const key = `uid${myStorage.length}`;
   e.preventDefault();
   const name = e.target.name.value;
   myStorage.setItem(key, name);
-  namesArr.push(name);
-  addName(name);
+  namesArr.push({ key: key, name: name });
+  console.log(namesArr);
+  addName(key, name);
   document.getElementById("name").value = "";
 });
